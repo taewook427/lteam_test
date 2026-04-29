@@ -198,3 +198,203 @@ aaa0000,,0,A0  ,  이제 수강할 정보창
 ### 2023.11.08 ~ 2023.11.22
 
 데이터 추가. 버그 픽스. 배포 시작.
+
+---
+
+# Leadership Team Project Group 2
+
+This is the web version of the promotion requirements calculator from Yonsei '23 Leadership Team Project Group 2.
+
+Please read the help section carefully,
+
+and respond to the satisfaction survey after using our group's calculator!
+
+For further inquiries, please contact the following administrators.
+
+```
+Group Leader: Sejin Kim
+Treasurer: Minkyo Gu
+Technical Manager: Taewook Ko
+```
+
+# How to Use (Basic Version)
+
+```
+Do you find calculating promotion requirements a hassle?
+Do you want to check if you have missed any conditions?
+Do you want to know how much of your minor plan is complete?
+
+Group 2's basic promotion requirements calculator provides an automated calculation service suitable for all peers!
+```
+
+- How to Enter Taken Courses
+
+When entering information on courses you have already taken, please use the Transcript from the Yonsei Portal.
+
+`Academic Information System > Grades > View All Grades > Print > Save`
+
+You can input all text from the printed grade certificate by dragging, copying, and pasting.
+
+- How to Enter Course Information
+
+When entering information for courses you plan to take, enter it in the format `Course Code, Course Type, Credit Count, Grade, Additional Information (Optional)`
+
+The recognized course types are `General, Electrical, Elective, Required, Teacher Training, University Education, School Technology, RC - UICE, MB, ME, CC, MR, LHP`,
+
+and The input grade types are `A+, A0, A-, B+, B0, B-, C+, C0, C-, D+, D0, D-, F, P, NP`.
+
+You can omit the course type and credit count for automatic recognition, but this does not always work.
+
+- Input Example
+
+```
+// Transcript Text Example
+본 정보 학번 2023191000 성명 김연세 학년 1 재학구분 재학 소속 의과대학 의예과
+학기 신청 취득 평균 종별 학정번호 분반 교과목명 담당교수 학점 평가 비고
+2023학년도 여름학기 6 6 3.85 대교 STA1001 03 통계학입문 이선순 3 A0
+전기 STA1002 01 미분적분학 박영자 3 A- 
+```
+
+```go
+// Example of Planned Course Information
+UCI1175,-,1,P, (연정인)
+AIC2130,대교,,C-
+bio1102,대교,3,C+  , 어바.
+sta2102,,,B-
+```
+
+This is the result of dragging and copying the text from the transcript exactly as it is.
+
+You can see that there are spaces between each word.
+
+Course enrollment information is separated by commas.
+
+For some subjects, the auto-input function was used by not entering the course type and credit count.
+
+- Special Subject Rules
+
+Since the academic codes for Humanities, Social Sciences, and Medicine 3 and 4 have not yet been released,
+
+this program arbitrarily uses `MED2111 and MED2112` respectively.
+
+Please use these academic codes when entering data.
+
+- How to Search for Subjects
+
+You can search by entering the academic code or course name in the search box on the right.
+
+You can specify the search range by pressing the button.
+
+- Checking Detailed Information
+
+Press F12 to view more detailed information regarding promotion requirements in the Console tab.
+
+# FAQ (Basic)
+
+### I can't drag text on my transcript
+
+This occurs when the output is displayed as an image rather than text.
+
+Please check if you have followed the path `View All Grades > Print > Save > Save`
+
+Additionally, please check if the `Display text as an image` option is turned off.
+
+### Automatic recognition is incorrect
+
+For students wishing to pursue a minor, the course types recognized by the program by default may be incorrect.
+
+For example, in the case of the Advanced Medical AI Convergence Major, if you enter it as follows, the `AIC-` courses are fundamentally university general education courses, so
+
+they do not count towards the major elective credits or the minor credits.
+
+```
+med2131,,,A+   ,(데싸)
+aic2130,,,C-   ,(인알)
+aic3100,,,B+   ,(딥러닝)
+aic2120,,,A-   ,(인개)
+aic3110,,,A0   ,(자연어)
+```
+
+Therefore, in this case, you must specify the course type directly as follows:
+
+```
+med2131,,,A+
+aic2130,전선,,C-
+aic3100,전선,,B+
+aic2120,전선,,A-
+aic3110,전선,,A0
+```
+
+If information such as the course type or credit count is entered incorrectly in the "Courses Already Taken" or "Courses to Take in the Future" input fields,
+
+the user can correct the information by slightly modifying the text entered directly.
+
+```
+To add to that, if you understand this program's recognition algorithm, you can specify it more effectively.
+The program counts the subjects entered by the user by dividing them into two repositories based on their type.
+reg1: Only subjects of the "University Liberal Arts" category are stored.
+reg0: All other subjects are stored.
+Some subjects that can be counted multiple times (sta1001: General Introduction/Essential Liberal Arts, med2131: Data Science/Medical School Required) may be stored in both repositories.
+One of the promotion requirements is met when subjects from all six fields exist within reg1. (International College Education and Urban Studies are counted separately.)
+Minor requirements are checked based on subjects in reg0, and each subject is not counted multiple times.
+However, some minors require specific university liberal arts courses for completion, and in return, require taking additional university liberal arts courses. Therefore, for minors with a completion rate of 50% or higher,
+If "moving one of the university general education courses in reg1 to reg0 results in successful completion of the minor and satisfies the course enrollment criteria for 6 fields,"
+you are required to modify the minor completion rate.
+For example, the Economics minor requires "ECO1001: Introduction to Economics/University General Education" to complete.
+Normally, this course would be counted in University General Education reg1; however, if you fill the 6 fields with other university general education courses and
+satisfy the minor criteria, ECO1001 is moved to reg0. (However, it is not included in the major elective credit count.)
+Therefore, in typical situations, users do not need to manually classify university general education courses and modify them to satisfy the minor completion requirements.
+```
+
+### I want to delete previously entered information
+
+You can delete previously entered information by entering meaningless code as follows.
+
+```
+- aaa0000 0 A0 Information window for courses already taken
+aaa0000,,0,A0 , Information window for courses to take now
+```
+
+### I want to save the information I entered
+
+This page uses cookies to save course information entered last time.
+
+The information remains even if you access the page again.
+
+# update log
+
+### 2023.09 ~ 2023.10
+
+Created GitHub page for new technology disclosure. Released course code extraction function and minor requirement organization tool.
+
+### 2023.10.22
+
+Page renewal. Launched admin page.
+
+### 2023.10.23
+
+Added main page design.
+
+### 2023.10.24
+
+Created user page appearance.
+
+### 2023.10.25 ~ 2023.10.26
+
+Implemented user page functionality. Design improvements.
+
+### 2023.10.27
+
+Fixed some bugs. Configured additional console information output.
+
+### 2023.11.01
+
+Updated university liberal arts information.
+
+### 2023.11.03 ~ 2023.11.05
+
+Added help documentation. Developed crawling tool.
+
+### 2023.11.08 ~ 2023.11.22
+
+Added data. Bug fixes. Started deployment.
